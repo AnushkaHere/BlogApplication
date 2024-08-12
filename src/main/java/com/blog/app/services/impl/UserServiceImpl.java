@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<UserDto> getAllUser() {
         List<User> users=this.userRepository.findAll();
-        List<UserDto> userDtos=users.stream().map(user -> this.userToDto(user)).collect(Collectors.toList());
+        List<UserDto> userDtos=users.stream().map(this::userToDto).collect(Collectors.toList());
         return userDtos;
     }
 
