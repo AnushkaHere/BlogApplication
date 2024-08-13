@@ -26,10 +26,9 @@ public class UserController {
 
     //get
     @GetMapping("/{user_id}")
-    public ResponseEntity<UserDto> getUserById(@PathVariable Integer userId){
+    public ResponseEntity<UserDto> getUserById(@PathVariable("user_id") Integer userId) {
         return ResponseEntity.ok(this.userService.getUserById(userId));
     }
-
     //create
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
@@ -39,9 +38,9 @@ public class UserController {
 
     //update
     @PutMapping("/{user_id}")
-    public ResponseEntity<UserDto> updateUser(@PathVariable("user_id") Integer userId, @Valid @RequestBody UserDto userDto){
-      UserDto updateUser =  this.userService.updateUser(userDto, userId);
-      return ResponseEntity.ok(updateUser);
+    public ResponseEntity<UserDto> updateUser(@PathVariable("user_id") Integer userId, @Valid @RequestBody UserDto userDto) {
+        UserDto updateUser = this.userService.updateUser(userDto, userId);
+        return ResponseEntity.ok(updateUser);
     }
 
     //delete

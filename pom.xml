@@ -11,7 +11,7 @@
 	<groupId>com.blog.app</groupId>
 	<artifactId>Blog-App</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>Blog-App</name>
+	<name>Blogging-App</name>
 	<description>Project for a blog app</description>
 	<url/>
 	<licenses>
