@@ -3,6 +3,7 @@ package com.blog.app.controllers;
 import com.blog.app.payloads.ApiResponse;
 import com.blog.app.payloads.CategoryDto;
 import com.blog.app.services.CategoryService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -13,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/categories")
+@Tag(name="Category Controller", description = "This API works on Category Service")
 public class CategoryController {
 
     @Autowired

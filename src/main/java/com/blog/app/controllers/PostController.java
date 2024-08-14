@@ -4,12 +4,14 @@ import com.blog.app.payloads.ApiResponse;
 import com.blog.app.payloads.PostDto;
 import com.blog.app.services.FileService;
 import com.blog.app.services.PostService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,6 +22,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name="Post Controller", description = "This API works on Post Service")
 public class PostController {
 
     @Autowired
@@ -75,6 +78,7 @@ public class PostController {
     }
 
     // Delete posts
+    @PreAuthorize("hasRole('ADMIN')")
     @DeleteMapping("/posts/{post_id}")
     public ResponseEntity<ApiResponse> deletePost(@PathVariable("post_id") Integer postId) {
         postService.deletePost(postId);
@@ -82,7 +86,7 @@ public class PostController {
     }
 
     //post image upload
-    @PostMapping("/posts/image/upload/{post_id}")
+    @PostMapping("/posts/images/upload/{post_id}")
     public ResponseEntity<PostDto> uploadPostImage(@RequestParam("image") MultipartFile image,
                                                    @PathVariable("post_id") Integer postId) throws IOException {
         String fileName=fileService.uploadImage(path,image);
@@ -93,7 +97,7 @@ public class PostController {
     }
 
     //method to serve files
-    @GetMapping(value = "/posts/image/{imageName}",produces = MediaType.IMAGE_JPEG_VALUE)
+    @GetMapping(value = "/posts/images/{imageName}",produces = MediaType.IMAGE_JPEG_VALUE)
     public void downloadImage(@PathVariable("imageName") String imageName, HttpServletResponse response) throws IOException {
 
         InputStream resource = this.fileService.getResource(path, imageName);

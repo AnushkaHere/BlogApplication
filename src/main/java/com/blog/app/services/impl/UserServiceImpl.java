@@ -1,15 +1,21 @@
 package com.blog.app.services.impl;
 
+import com.blog.app.config.AppConstants;
+import com.blog.app.entities.Role;
 import com.blog.app.entities.User;
+import com.blog.app.exceptions.ApiException;
 import com.blog.app.exceptions.ResourceNotFoundException;
 import com.blog.app.payloads.UserDto;
+import com.blog.app.repositories.RoleRepository;
 import com.blog.app.repositories.UserRepository;
 import com.blog.app.services.UserService;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,7 +25,34 @@ public class UserServiceImpl implements UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private RoleRepository roleRepository;
+
+    @Autowired
     private ModelMapper modelMapper;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+
+    @Override
+    public UserDto registerNewUser(UserDto userDto) {
+        User user = this.dtoToUser(userDto);
+
+        // Encode the password
+        user.setPassword(this.passwordEncoder.encode(user.getPassword()));
+
+        // Retrieve the role
+        Optional<Role> roleOptional = this.roleRepository.findById(AppConstants.USER);
+        if (roleOptional.isPresent()) {
+            user.getRoles().add(roleOptional.get());
+        } else {
+            throw new ApiException("Default role not found");
+        }
+
+        // Save the new user
+        User newUser = userRepository.save(user);
+
+        return this.userToDto(newUser);
+    }
 
     @Override
     public UserDto createUser(UserDto userDto) {
