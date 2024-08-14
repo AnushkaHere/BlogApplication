@@ -94,12 +94,12 @@ This is a comprehensive blogging application built using Spring Boot, Java, Swag
 ### Installation
 
 1. **Clone the repository:**
-   ```bash
+```bash
      git clone https://github.com/BloggingApplication/blogging-app.git
-   ```
-   ```bash
+```
+```bash
      cd blogging-app
-   ```
+  ```
 2. **Build the project**:
   ```bash
     mvn clean install
@@ -109,7 +109,7 @@ This is a comprehensive blogging application built using Spring Boot, Java, Swag
     mvn spring-boot:run
   ```
 4. **Access the application**:
-The application will be running at http://localhost:8080.
+The application will be running at `http://localhost:8080`.
 
 ### API Documentation
 
