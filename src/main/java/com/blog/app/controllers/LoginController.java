@@ -6,6 +6,7 @@ import com.blog.app.payloads.JwtAuthResponse;
 import com.blog.app.payloads.UserDto;
 import com.blog.app.security.JwtTokenHelper;
 import com.blog.app.services.UserService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name="Auth Controller", description = "This API is for Login and Register Users")
 public class LoginController {
 
     @Autowired

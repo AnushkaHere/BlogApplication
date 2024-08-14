@@ -4,7 +4,6 @@ import com.blog.app.security.CustomUserDetailService;
 import com.blog.app.security.JwtAuthenticationEntryPoint;
 import com.blog.app.security.JwtAuthenticationFilter;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -20,11 +19,14 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
-import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
-import org.springframework.web.filter.CorsFilter;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+
+import java.util.Arrays;
+import java.util.Collections;
 
 @Configuration
 @EnableWebSecurity
+@EnableWebMvc
 @EnableGlobalMethodSecurity(prePostEnabled = true)
 public class SecurityConfig{
 
@@ -42,10 +44,19 @@ public class SecurityConfig{
 
         http
                 .csrf(csrf -> csrf.disable()) // Disable CSRF
+                .cors(cors -> cors
+                        .configurationSource(request -> {
+                            CorsConfiguration config = new CorsConfiguration();
+                            config.setAllowedOrigins(Collections.singletonList("*"));
+                            config.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE", "OPTIONS"));
+                            config.setAllowedHeaders(Arrays.asList("Authorization", "Content-Type", "Accept"));
+                            config.setAllowCredentials(true);
+                            return config;
+                        })
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(AppConstants.PUBLIC_URLS).permitAll() // Replace 'antMatchers' with 'requestMatchers'
                         .requestMatchers(HttpMethod.GET).permitAll() // Allow GET requests to be accessible to everyone
-                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll() // Allow access to Swagger UI and API docs
                         .anyRequest().authenticated() // All other requests require authentication
                 )
                 .exceptionHandling(ex -> ex
@@ -77,37 +88,9 @@ public class SecurityConfig{
 
     }
 
-
     @Bean
     public AuthenticationManager authenticationManagerBean(AuthenticationConfiguration configuration) throws Exception {
         return configuration.getAuthenticationManager();
-    }
-
-
-    @Bean
-    public FilterRegistrationBean coresFilter() {
-        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
-
-        CorsConfiguration corsConfiguration = new CorsConfiguration();
-        corsConfiguration.setAllowCredentials(true);
-        corsConfiguration.addAllowedOriginPattern("*");
-        corsConfiguration.addAllowedHeader("Authorization");
-        corsConfiguration.addAllowedHeader("Content-Type");
-        corsConfiguration.addAllowedHeader("Accept");
-        corsConfiguration.addAllowedMethod("POST");
-        corsConfiguration.addAllowedMethod("GET");
-        corsConfiguration.addAllowedMethod("DELETE");
-        corsConfiguration.addAllowedMethod("PUT");
-        corsConfiguration.addAllowedMethod("OPTIONS");
-        corsConfiguration.setMaxAge(3600L);
-
-        source.registerCorsConfiguration("/**", corsConfiguration);
-
-        FilterRegistrationBean bean = new FilterRegistrationBean(new CorsFilter(source));
-
-        bean.setOrder(-110);
-
-        return bean;
     }
 
 }

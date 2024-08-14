@@ -3,6 +3,8 @@ package com.blog.app.controllers;
 import com.blog.app.payloads.ApiResponse;
 import com.blog.app.payloads.UserDto;
 import com.blog.app.services.UserService;
+import io.swagger.v3.oas.annotations.Hidden;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -14,6 +16,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api/users")
+@Tag(name="User Controller", description = "This API works on User Service")
 public class UserController {
 
     @Autowired
@@ -31,6 +34,7 @@ public class UserController {
         return ResponseEntity.ok(this.userService.getUserById(userId));
     }
     //create
+    @Hidden
     @PostMapping
     public ResponseEntity<UserDto> createUser(@Valid @RequestBody UserDto userDto){
         UserDto createUserDto=this.userService.createUser(userDto);

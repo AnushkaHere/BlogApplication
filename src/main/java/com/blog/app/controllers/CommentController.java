@@ -3,6 +3,7 @@ package com.blog.app.controllers;
 import com.blog.app.payloads.ApiResponse;
 import com.blog.app.payloads.CommentDto;
 import com.blog.app.services.CommentService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/api")
+@Tag(name="Comment Controller", description = "This API works on Comment Service")
 public class CommentController {
 
     @Autowired
