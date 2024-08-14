@@ -1,11 +1,13 @@
 package com.blog.app.security;
 
+import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import javax.crypto.SecretKey;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -14,55 +16,57 @@ import java.util.function.Function;
 @Component
 public class JwtTokenHelper {
 
-    public static final long JWT_TOKEN_VALIDITY=5*60*60;
+    public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
 
-    private String secret="JwtTokenKey";
+    // Use a secure key with at least 256 bits (32 characters if using a simple alphanumeric key)
+    private final SecretKey secretKey = Keys.secretKeyFor(SignatureAlgorithm.HS512); // generate a secure key
 
-    //retrieves username from Jwt Token
-    public String getUsernameFromToken(String token){
+    // Retrieves username from Jwt Token
+    public String getUsernameFromToken(String token) {
         return getClaimFromToken(token, Claims::getSubject);
     }
 
-    //retrieves expiration date from Jwt Token
-    public Date getExpirationDateFromToken(String token){
+    // Retrieves expiration date from Jwt Token
+    public Date getExpirationDateFromToken(String token) {
         return getClaimFromToken(token, Claims::getExpiration);
     }
 
-    public <T> T getClaimFromToken(String token, Function<Claims,T> claimsResolver){
-        final Claims claims=getAllClaimsFromToken(token);
+    public <T> T getClaimFromToken(String token, Function<Claims, T> claimsResolver) {
+        final Claims claims = getAllClaimsFromToken(token);
         return claimsResolver.apply(claims);
     }
 
-    //retrieves data from token
-    private Claims getAllClaimsFromToken(String token){
-        return Jwts.parser().setSigningKey(secret).parseClaimsJws(token).getBody();
+    // Retrieves data from token
+    private Claims getAllClaimsFromToken(String token) {
+        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody();
     }
 
-    //checks if token is expired
-    private Boolean isTokenExpired(String token){
-        final Date expiration=getExpirationDateFromToken(token);
+    // Checks if token is expired
+    private Boolean isTokenExpired(String token) {
+        final Date expiration = getExpirationDateFromToken(token);
         return expiration.before(new Date());
     }
 
-    //generates token for user
-    public String generateToken(UserDetails userDetails){
-        Map<String,Object> claims=new HashMap<>();
-        return doGenerateToken(claims,userDetails.getUsername());
+    // Generates token for user
+    public String generateToken(UserDetails userDetails) {
+        Map<String, Object> claims = new HashMap<>();
+        return doGenerateToken(claims, userDetails.getUsername());
     }
 
-    //while creating the token -
-    //1. Define  claims of the token, like Issuer, Expiration, Subject, and the ID
-    //2. Sign the JWT using the HS512 algorithm and secret key.
-    //3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1) compaction of the JWT to a URL-safe string
-    private String doGenerateToken(Map<String ,Object> claims, String subject){
+    // While creating the token -
+    // 1. Define claims of the token, like Issuer, Expiration, Subject, and the ID
+    // 2. Sign the JWT using the HS512 algorithm and secret key.
+    // 3. According to JWS Compact Serialization(https://tools.ietf.org/html/draft-ietf-jose-json-web-signature-41#section-3.1)
+    //    compaction of the JWT to a URL-safe string
+    private String doGenerateToken(Map<String, Object> claims, String subject) {
         return Jwts.builder().setClaims(claims).setSubject(subject).setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis() + JWT_TOKEN_VALIDITY * 1000))
-                .signWith(SignatureAlgorithm.HS512, secret).compact();
+                .signWith(SignatureAlgorithm.HS512, secretKey).compact();
     }
 
-    //validates token
-    public Boolean validateToken(String token, UserDetails userDetails){
-        final String userName=getUsernameFromToken(token);
+    // Validates token
+    public Boolean validateToken(String token, UserDetails userDetails) {
+        final String userName = getUsernameFromToken(token);
         return userName.equals(userDetails.getUsername()) && !isTokenExpired(token);
     }
 }

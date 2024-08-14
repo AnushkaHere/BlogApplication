@@ -3,6 +3,7 @@ package com.blog.app.services.impl;
 import com.blog.app.config.AppConstants;
 import com.blog.app.entities.Role;
 import com.blog.app.entities.User;
+import com.blog.app.exceptions.ApiException;
 import com.blog.app.exceptions.ResourceNotFoundException;
 import com.blog.app.payloads.UserDto;
 import com.blog.app.repositories.RoleRepository;
@@ -14,6 +15,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -33,17 +35,21 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto registerNewUser(UserDto userDto) {
-        User user=this.dtoToUser(userDto);
+        User user = this.dtoToUser(userDto);
 
-        //encode the password
+        // Encode the password
         user.setPassword(this.passwordEncoder.encode(user.getPassword()));
 
-        //retrieving role
-        Role role=this.roleRepository.findById(AppConstants.USER).get();
+        // Retrieve the role
+        Optional<Role> roleOptional = this.roleRepository.findById(AppConstants.USER);
+        if (roleOptional.isPresent()) {
+            user.getRoles().add(roleOptional.get());
+        } else {
+            throw new ApiException("Default role not found");
+        }
 
-        user.getRoles().add(role);
-
-        User newUser=userRepository.save(user);
+        // Save the new user
+        User newUser = userRepository.save(user);
 
         return this.userToDto(newUser);
     }
