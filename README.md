@@ -95,11 +95,11 @@ This is a comprehensive blogging application built using Spring Boot, Java, Swag
 
 1. **Clone the repository:**
 ```bash
-     git clone https://github.com/BloggingApplication/blogging-app.git
+  git clone https://github.com/BloggingApplication/blogging-app.git
 ```
 ```bash
-     cd blogging-app
-  ```
+  cd blogging-app
+```
 2. **Build the project**:
   ```bash
     mvn clean install
