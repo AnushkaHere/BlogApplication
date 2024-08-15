@@ -145,6 +145,10 @@ Example:
 
 ### API Endpoints
 
+#### Auth API
+- `POST /api/auth/login`: Authenticate a user and obtain a JWT token.
+- `POST /api/auth/register`: Register a new user.
+
 #### User API
 
 - `GET /api/users`: Retrieve all users.
