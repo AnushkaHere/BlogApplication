@@ -1,6 +1,7 @@
 package com.blog.app.payloads;
 
 import com.blog.app.entities.Role;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
@@ -24,6 +25,7 @@ public class UserDto {
     @NotEmpty(message = "Email is required.")
     private String email;
 
+    @JsonIgnore
     @NotEmpty
     @Size(min=6, max=15, message = "Password must be between 6 to 15 characters long.")
     private String password;
