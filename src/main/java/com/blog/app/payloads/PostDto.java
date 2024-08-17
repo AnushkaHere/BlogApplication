@@ -4,6 +4,7 @@ package com.blog.app.payloads;
 import com.blog.app.entities.Comment;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Date;
 import java.util.List;
@@ -20,5 +21,4 @@ public class PostDto {
     private CategoryDto categoryDto;
     private UserDto userDto;
     private List<Comment> comments;
-
 }
