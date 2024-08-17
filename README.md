@@ -183,7 +183,7 @@ Example:
 - `POST /api/posts/{post_id}/comments`: Create a new comment on a post.
 - `DELETE /api/comments/{comment_id}`: Delete a comment.
 
-## Security Configuration
+### Security Configuration
 
 The application uses Spring Security for securing the endpoints. The security configuration is set up using the `SecurityFilterChain` bean method in the `SecurityConfig` class.
 
@@ -195,6 +195,14 @@ The application uses Spring Security for securing the endpoints. The security co
 - `/api/auth/login` - Open for authentication.
 - `/api/auth/register` - Open for user registration.
 
+### Actuator Endpoints
+This application uses Spring Boot Actuator to provide various endpoints for monitoring and managing the application. Below are some commonly used Actuator endpoints:
+
+- `/actuator/health`: Shows the health status of the application.
+- `/actuator/info`: Displays application information.
+- `/actuator/metrics`: Shows metrics information.
+- `/actuator/beans`: Displays a list of all Spring beans in the application context.
+- `/actuator/loggers`: Exposes and allows the modification of log levels.
 
 ### Data Format Support
 

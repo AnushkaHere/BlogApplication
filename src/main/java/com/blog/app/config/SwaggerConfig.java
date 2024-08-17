@@ -8,20 +8,36 @@ import io.swagger.v3.oas.models.info.License;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.security.SecurityScheme.Type;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
+
+import java.util.Arrays;
 
 @Configuration
 public class SwaggerConfig {
 
     public static final String AUTHORIZATION_HEADER = "Authorization";
 
+    @Profile("dev")
     @Bean
-    public OpenAPI customOpenAPI() {
+    public OpenAPI devOpenAPI() {
         return new OpenAPI()
                 .info(apiInfo())
                 .addSecurityItem(securityRequirement())
+                .servers(Arrays.asList(new Server().url("localhost:8080").description("Development Server")))
+                .components(components());
+    }
+
+    @Profile("prod")
+    @Bean
+    public OpenAPI prodOpenAPI() {
+        return new OpenAPI()
+                .info(apiInfo())
+                .addSecurityItem(securityRequirement())
+                .servers(Arrays.asList(new Server().url("localhost:8080").description("Production Server")))
                 .components(components());
     }
 
@@ -39,13 +55,8 @@ public class SwaggerConfig {
                 .description("This project is created by Anushka to provide APIs for blogging app.")
                 .version("v1.0")
                 .termsOfService("Terms of Service")
-                .contact(new Contact()
-                        .name("Anushka")
-                        .url("http://abc.com")
-                        .email("abc@gmail.com"))
-                .license(new License()
-                        .name("License")
-                        .url("http://abc.com/license")); // Add URL for license if applicable
+                .contact(new Contact().name("Anushka").url("http://abc.com").email("anushka@gmail.com"))
+                .license(new License().name("License").url("")); // Add URL for license if applicable
     }
 
     private Components components(){
