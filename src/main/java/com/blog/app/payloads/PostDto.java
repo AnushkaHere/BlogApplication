@@ -20,5 +20,5 @@ public class PostDto {
     private Date addedDate;
     private CategoryDto categoryDto;
     private UserDto userDto;
-    private List<Comment> comments;
+    private List<Comment> comments=new Arraylist<>();
 }
