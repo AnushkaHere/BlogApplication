@@ -25,7 +25,7 @@ public class UserDto {
     @NotEmpty(message = "Email is required.")
     private String email;
 
-    @JsonIgnore
+    @JsonIgnore(access = JsonProperty.Access.WRITE_ONLY)
     @NotEmpty
     @Size(min=6, max=15, message = "Password must be between 6 to 15 characters long.")
     private String password;
